@@ -8,11 +8,10 @@ mongoose.Promise = global.Promise;
 const { Restaurant } = require('../models');
 const { app, runServer, closeServer } = require('../server');
 const { TEST_DATABASE_URL } = require('../config');
-const seedData = require('./seedData');
+const seedData = require('../data/seedData');
 
 const should = chai.should();
 chai.use(chaiHttp);
-
 
 before(function () {
   return runServer(TEST_DATABASE_URL);
@@ -78,7 +77,7 @@ describe('GET endpoint', function () {
 });
 
 describe('POST endpoint', function () {
-  it.only('should add a new restaurant', function () {
+  it('should add a new restaurant', function () {
     const newRestaurant = {
       'name': 'Test Restaurant',
       'borough': 'Brooklyn',
