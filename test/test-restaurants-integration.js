@@ -3,7 +3,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const mongoose = require('mongoose');
-mongoose.Promise = global.Promise;
 
 const { Restaurant } = require('../models');
 const { app, runServer, closeServer } = require('../server');
@@ -17,6 +16,10 @@ before(function () {
   return runServer(TEST_DATABASE_URL);
 });
 
+after(function () {
+  return closeServer();
+});
+
 beforeEach(function () {
   return Restaurant.insertMany(seedData);
 });
@@ -25,13 +28,12 @@ afterEach(function () {
   return mongoose.connection.dropDatabase();
 });
 
-after(function () {
-  return closeServer();
-});
-
 describe('GET endpoint', function () {
-  let res;
+
+
   it('should return all existing restaurants', function () {
+
+    let res;
     return chai.request(app)
       .get('/restaurants')
       .then(function (temp) {
@@ -43,7 +45,7 @@ describe('GET endpoint', function () {
         return Restaurant.count();
       })
       .then(function (count) {
-        res.body.restaurants.should.have.length.of(count);
+        res.body.restaurants.should.have.lengthOf(count);
       });
   });
 

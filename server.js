@@ -9,14 +9,13 @@ const { PORT, DATABASE_URL } = require('./config');
 const { Restaurant } = require('./models');
 
 const app = express();
-app.use(bodyParser.json());
+app.use(express.json());
 
 app.get('/restaurants', (req, res) => {
   Restaurant
     .find()
     .limit(10)
     .then(restaurants => {
-      // res.json({restaurants: [{},{},{},]});
       res.json({
         restaurants: restaurants.map(
           (restaurant) => restaurant.apiRepr())
