@@ -16,10 +16,6 @@ before(function () {
   return runServer(TEST_DATABASE_URL);
 });
 
-after(function () {
-  return closeServer();
-});
-
 beforeEach(function () {
   return Restaurant.insertMany(seedData);
 });
@@ -28,13 +24,16 @@ afterEach(function () {
   return mongoose.connection.dropDatabase();
 });
 
-describe('GET endpoint', function () {
+after(function () {
+  return closeServer();
+});
 
+describe('GET endpoint', function () {
 
   it('should return all existing restaurants', function () {
 
     let res;
-    return chai.request(app)
+    return  chai.request(app)
       .get('/restaurants')
       .then(function (temp) {
         res = temp;
@@ -42,7 +41,7 @@ describe('GET endpoint', function () {
         res.should.be.json;
         res.body.restaurants.should.be.a('array');
         res.body.restaurants.should.have.length.of.at.least(1);
-        return Restaurant.count();
+        return Restaurant.countDocuments();
       })
       .then(function (count) {
         res.body.restaurants.should.have.lengthOf(count);
@@ -167,8 +166,8 @@ describe('DELETE endpoint', function () {
     let restaurant;
     return Restaurant
       .findOne()
-      .then(function (temp) {
-        restaurant = temp;
+      .then(function (tempRestaurant) {
+        restaurant = tempRestaurant;
         return chai.request(app).delete(`/restaurants/${restaurant.id}`);
       })
       .then(function (res) {
